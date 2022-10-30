@@ -10,17 +10,21 @@ type CreateBookCommand struct {
 }
 
 type DeleteBookCommand struct {
-	Id int64
+	Id uint64
 }
 
-type UpdatePagePosition struct {
+type UpdatePagePositionCommand struct {
 	Id       int64
 	Position float32
 }
 
-type UpdateBookCompleted struct {
+type UpdateBookCompletedCommand struct {
 	Id        int64
 	Completed bool
+}
+
+type ToggleCompletionCommand struct {
+	Id int64
 }
 
 // - Queries

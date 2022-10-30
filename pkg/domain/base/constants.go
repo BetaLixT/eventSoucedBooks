@@ -7,9 +7,7 @@ const (
 	NOTIFICATIONS_EX_NAME      = "notifications"
 	NOTIFICATIONS_EX_TYPE      = "topic"
 
-	DOMAIN_CREATED_EVENT = "created"
-	DOMAIN_UPDATED_EVENT = "updated"
-	DOMAIN_DELETED_EVENT = "deleted"
-
-	COURTROOM_DOMAIN_STREAM = "courtrooms"
+	DOMAIN_CREATE_EVENT = "create"
+	DOMAIN_UPDATE_EVENT = "update"
+	DOMAIN_DELETE_EVENT = "delete"
 )
