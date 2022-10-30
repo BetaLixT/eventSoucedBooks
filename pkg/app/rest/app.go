@@ -13,10 +13,10 @@ import (
 	"eventSourcedBooks/pkg/app/rest/middlewares"
 	"eventSourcedBooks/pkg/domain"
 	"eventSourcedBooks/pkg/domain/auth"
+	"eventSourcedBooks/pkg/infra/common"
 	"eventSourcedBooks/pkg/infra"
 	"eventSourcedBooks/pkg/infra/db"
 	"eventSourcedBooks/pkg/infra/logger"
-	"eventSourcedBooks/pkg/infra/standard"
 
 	trace "github.com/BetaLixT/appInsightsTrace"
 	"github.com/BetaLixT/tsqlx"
@@ -105,14 +105,14 @@ func (a *app) startService() {
 	})
 	// - Setting up middlewares
 	router.Use(gingorr.RootRecoveryMiddleware(baseLgr))
-	router.Use(trex.TxContextMiddleware(standard.TRACE_INFO_KEY))
+	router.Use(trex.TxContextMiddleware(common.TRACE_INFO_KEY))
 	router.Use(trex.RequestTracerMiddleware(a.traceRequest))
-	router.Use(gingorr.RecoveryMiddleware(a.lgrf, standard.TRACE_INFO_KEY))
+	router.Use(gingorr.RecoveryMiddleware(a.lgrf, common.TRACE_INFO_KEY))
 	router.GET(
 		"/swagger/*any",
 		ginSwagger.WrapHandler(swaggerFiles.Handler),
 	)
-	router.Use(gingorr.ErrorHandlerMiddleware(a.lgrf, standard.TRACE_INFO_KEY))
+	router.Use(gingorr.ErrorHandlerMiddleware(a.lgrf, common.TRACE_INFO_KEY))
 	if !authDisabled {
 		router.Use(middlewares.AuthMiddleware(a.authsvc))
 	}

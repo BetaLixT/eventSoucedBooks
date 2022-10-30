@@ -2,7 +2,6 @@
 package common
 
 const (
-	APP_CLAIMS_KEY             = "claims"
 	NOTIFICATIONS_SERVICE_NAME = "eventSourcedBooks"
 	NOTIFICATIONS_EX_NAME      = "notifications"
 	NOTIFICATIONS_EX_TYPE      = "topic"

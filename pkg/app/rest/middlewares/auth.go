@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"eventSourcedBooks/pkg/domain/auth"
-	"eventSourcedBooks/pkg/infra/standard"
+	"eventSourcedBooks/pkg/app/rest/common"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,13 +13,13 @@ func AuthMiddleware(svc *auth.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, ok := c.Request.Header["Authorization"]
 		if !ok || len(token) < 1 {
-			c.Error(standard.NewTokenMissingError())
+			c.Error(common.NewTokenMissingError())
 			c.Abort()
 			return
 		}
 		split := strings.Split(token[0], " ")
 		if len(split) != 2 {
-			c.Error(standard.NewTokenFormatInvalidError())
+			c.Error(common.NewTokenFormatInvalidError())
 			c.Abort()
 			return
 		}
@@ -30,7 +30,7 @@ func AuthMiddleware(svc *auth.AuthService) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.Set(standard.APP_CLAIMS_KEY, claims)
+		c.Set(common.APP_CLAIMS_KEY, claims)
 		c.Next()
 	}
 }
