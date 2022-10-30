@@ -1,0 +1,497 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/courtrooms/": {
+            "post": {
+                "description": "Create courtroom",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Create courtroom",
+                "parameters": [
+                    {
+                        "description": "create courtroom body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateUpdateCourtroom"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/res.Courtroom"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courtrooms/query": {
+            "post": {
+                "description": "Query courtrooms",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Query courtrooms",
+                "parameters": [
+                    {
+                        "description": "query courtroom body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/req.SearchQuery"
+                            }
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page Number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Items per Page",
+                        "name": "items",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Property to order by",
+                        "name": "orderby",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Order by descending",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/res.Courtroom"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courtrooms/{courtroomId}": {
+            "get": {
+                "description": "Get courtroom",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Get courtroom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Courtroom Id",
+                        "name": "courtroomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/res.Courtroom"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete courtroom",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Delete courtroom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Courtroom Id",
+                        "name": "courtroomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/res.Courtroom"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update courtroom",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Update courtroom",
+                "parameters": [
+                    {
+                        "description": "create courtroom body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateUpdateCourtroom"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Courtroom Id",
+                        "name": "courtroomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/res.Courtroom"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/courtrooms/{courtroomId}/meta": {
+            "delete": {
+                "description": "Delete courtroom metadata",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Delete courtroom metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Courtroom Id",
+                        "name": "courtroomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete Keys",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Courtroom"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update courtroom metadata",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Update courtroom metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Courtroom Id",
+                        "name": "courtroomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "update key values",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Courtroom"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "base.AudioConferencing": {
+            "type": "object",
+            "properties": {
+                "ConferenceId": {
+                    "type": "string"
+                },
+                "dialinUrl": {
+                    "type": "string"
+                },
+                "tollFreeNumber": {
+                    "type": "string"
+                },
+                "tollNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "base.ChatInfo": {
+            "type": "object",
+            "properties": {
+                "messageId": {
+                    "type": "string"
+                },
+                "replyChainMessageId": {
+                    "type": "string"
+                },
+                "threadId": {
+                    "type": "string"
+                }
+            }
+        },
+        "base.JoinInfo": {
+            "type": "object",
+            "properties": {
+                "audioConferencing": {
+                    "$ref": "#/definitions/base.AudioConferencing"
+                },
+                "chatInfo": {
+                    "$ref": "#/definitions/base.ChatInfo"
+                },
+                "creationDateTime": {
+                    "type": "string"
+                },
+                "endDateTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "joinWebUrl": {
+                    "type": "string"
+                },
+                "startDateTime": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.CreateUpdateCourtroom": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dateTimeEnd": {
+                    "type": "string"
+                },
+                "dateTimeStart": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.SearchQuery": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "valueType": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.Courtroom": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dateTimeCreated": {
+                    "type": "string"
+                },
+                "dateTimeEnd": {
+                    "type": "string"
+                },
+                "dateTimeStart": {
+                    "type": "string"
+                },
+                "dateTimeUpdated": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "externalCmsId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "joinInfo": {
+                    "$ref": "#/definitions/base.JoinInfo"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

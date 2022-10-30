@@ -1,0 +1,329 @@
+definitions:
+  base.AudioConferencing:
+    properties:
+      ConferenceId:
+        type: string
+      dialinUrl:
+        type: string
+      tollFreeNumber:
+        type: string
+      tollNumber:
+        type: string
+    type: object
+  base.ChatInfo:
+    properties:
+      messageId:
+        type: string
+      replyChainMessageId:
+        type: string
+      threadId:
+        type: string
+    type: object
+  base.JoinInfo:
+    properties:
+      audioConferencing:
+        $ref: '#/definitions/base.AudioConferencing'
+      chatInfo:
+        $ref: '#/definitions/base.ChatInfo'
+      creationDateTime:
+        type: string
+      endDateTime:
+        type: string
+      id:
+        type: string
+      joinWebUrl:
+        type: string
+      startDateTime:
+        type: string
+      subject:
+        type: string
+    type: object
+  req.CreateUpdateCourtroom:
+    properties:
+      categories:
+        items:
+          type: string
+        type: array
+      dateTimeEnd:
+        type: string
+      dateTimeStart:
+        type: string
+      description:
+        type: string
+      location:
+        type: string
+      metadata:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+    type: object
+  req.SearchQuery:
+    properties:
+      key:
+        type: string
+      operation:
+        type: string
+      value:
+        type: string
+      valueType:
+        type: string
+    type: object
+  res.Courtroom:
+    properties:
+      categories:
+        items:
+          type: string
+        type: array
+      dateTimeCreated:
+        type: string
+      dateTimeEnd:
+        type: string
+      dateTimeStart:
+        type: string
+      dateTimeUpdated:
+        type: string
+      description:
+        type: string
+      externalCmsId:
+        type: string
+      id:
+        type: string
+      joinInfo:
+        $ref: '#/definitions/base.JoinInfo'
+      location:
+        type: string
+      metadata:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/courtrooms/:
+    post:
+      consumes:
+      - application/json
+      description: Create courtroom
+      parameters:
+      - description: create courtroom body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateUpdateCourtroom'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/res.Courtroom'
+            type: array
+      summary: Create courtroom
+      tags:
+      - role
+  /api/v1/courtrooms/{courtroomId}:
+    delete:
+      description: Delete courtroom
+      parameters:
+      - description: Courtroom Id
+        in: path
+        name: courtroomId
+        required: true
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.Courtroom'
+            type: array
+      summary: Delete courtroom
+      tags:
+      - role
+    get:
+      description: Get courtroom
+      parameters:
+      - description: Courtroom Id
+        in: path
+        name: courtroomId
+        required: true
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.Courtroom'
+            type: array
+      summary: Get courtroom
+      tags:
+      - role
+    patch:
+      consumes:
+      - application/json
+      description: Update courtroom
+      parameters:
+      - description: create courtroom body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateUpdateCourtroom'
+      - description: Courtroom Id
+        in: path
+        name: courtroomId
+        required: true
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.Courtroom'
+            type: array
+      summary: Update courtroom
+      tags:
+      - role
+  /api/v1/courtrooms/{courtroomId}/meta:
+    delete:
+      consumes:
+      - application/json
+      description: Delete courtroom metadata
+      parameters:
+      - description: Courtroom Id
+        in: path
+        name: courtroomId
+        required: true
+        type: string
+      - description: Delete Keys
+        in: body
+        name: role
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Courtroom'
+      summary: Delete courtroom metadata
+      tags:
+      - role
+    patch:
+      consumes:
+      - application/json
+      description: Update courtroom metadata
+      parameters:
+      - description: Courtroom Id
+        in: path
+        name: courtroomId
+        required: true
+        type: string
+      - description: update key values
+        in: body
+        name: role
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Courtroom'
+      summary: Update courtroom metadata
+      tags:
+      - role
+  /api/v1/courtrooms/query:
+    post:
+      description: Query courtrooms
+      parameters:
+      - description: query courtroom body
+        in: body
+        name: role
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/req.SearchQuery'
+          type: array
+      - description: Page Number
+        in: query
+        name: page
+        type: string
+      - description: Items per Page
+        in: query
+        name: items
+        type: string
+      - description: Property to order by
+        in: query
+        name: orderby
+        type: string
+      - description: Order by descending
+        in: query
+        name: desc
+        type: boolean
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.Courtroom'
+            type: array
+      summary: Query courtrooms
+      tags:
+      - role
+swagger: "2.0"
