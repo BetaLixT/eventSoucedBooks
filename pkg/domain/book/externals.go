@@ -5,11 +5,22 @@ import (
 )
 
 type IRepository interface {
+	// - Commands
 	CreateBook(
 		ctx context.Context,
-		title string,
-		description string,
-		author string,
-		genres []string,
+		data BookData,
 	) error
+	UpdateBook(
+		ctx context.Context,
+		id string,
+		data BookData,
+	)
+	DeleteBook(
+		ctx context.Context,
+		id string,
+	)
+	ListEvents(
+		ctx context.Context,
+		id string,
+	) ([]BookEvent, error)
 }

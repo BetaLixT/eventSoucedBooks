@@ -3,12 +3,12 @@ package base
 import "time"
 
 type Event struct {
-	Id        int
-	SagaId    string
-	Stream    string
-	StreamId  string
-	Event     string
-	Version   int
-	EventTime time.Time
-	Data      map[string]interface{}
+	Id        uint64                 `json:"id"`
+	SagaId    string                 `json:"sagaId"`
+	Stream    string                 `json:"stream"`
+	StreamId  string                 `json:"streamId"`
+	Event     string                 `json:"event"`
+	Version   uint64                 `json:"version"`
+	EventTime time.Time              `json:"eventTime"`
+	Data      map[string]interface{} `json:"data"`
 }
