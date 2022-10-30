@@ -2,17 +2,20 @@ package book
 
 import (
 	"context"
+	"eventSourcedBooks/pkg/domain/base"
 )
 
 type IRepository interface {
 	// - Commands
 	Create(
 		ctx context.Context,
+		tx base.ITransaction,
 		sagaId *uint64,
 		data BookData,
 	) error
 	Update(
 		ctx context.Context,
+		tx base.ITransaction,
 		sagaId *uint64,
 		id uint64,
 		ver uint64,
@@ -20,6 +23,7 @@ type IRepository interface {
 	) error
 	Delete(
 		ctx context.Context,
+		tx base.ITransaction,
 		sagaId *uint64,
 		id uint64,
 		ver uint64,

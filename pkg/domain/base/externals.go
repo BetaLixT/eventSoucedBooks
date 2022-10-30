@@ -11,3 +11,13 @@ type ILoggerFactory interface {
 		ctx context.Context,
 	) *zap.Logger
 }
+
+type ITransaction interface {
+	Begin(ctx context.Context) error
+	Commit(ctx context.Context) error
+	Rollback(ctx context.Context)
+}
+
+type ITransactionFactory interface {
+	Create(ctx context.Context) (ITransaction, error)
+}

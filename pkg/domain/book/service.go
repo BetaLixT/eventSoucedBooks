@@ -3,19 +3,24 @@ package book
 import (
 	"context"
 	"eventSourcedBooks/pkg/domain/base"
+
+	"go.uber.org/zap"
 )
 
 type BookService struct {
 	lgrf base.ILoggerFactory
+	txfc base.ITransactionFactory
 	repo IRepository
 }
 
 func NewBookService(
 	lgrf base.ILoggerFactory,
+	txfc base.ITransactionFactory,
 	repo IRepository,
 ) *BookService {
 	return &BookService{
 		lgrf: lgrf,
+		txfc: txfc,
 		repo: repo,
 	}
 }
@@ -26,8 +31,24 @@ func (s *BookService) CreateBook(
 ) error {
 	fls := false
 	zero := float32(0.0)
-	return s.repo.Create(
+
+	tx, err := s.txfc.Create(ctx)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to create transaction")
+		return err
+	}
+
+	err = tx.Begin(ctx)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to begin transaction")
+		return err
+	}
+
+	err = s.repo.Create(
 		ctx,
+		tx,
 		cmd.SagaId,
 		BookData{
 			Title:           &cmd.Title,
@@ -38,6 +59,19 @@ func (s *BookService) CreateBook(
 			CurrentPosition: &zero,
 		},
 	)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to create book")
+		tx.Rollback(ctx)
+	} else {
+		err = tx.Commit(ctx)
+		if err != nil {
+			lgr := s.lgrf.NewLogger(ctx)
+			lgr.Error("failed to commit transaction")
+			tx.Rollback(ctx)	
+		}
+	}
+	return err
 }
 
 func (s *BookService) DeleteBook(
