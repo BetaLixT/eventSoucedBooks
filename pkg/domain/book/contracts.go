@@ -2,7 +2,7 @@ package book
 
 // - Commands
 type CreateBookCommand struct {
-	SagaId      *int
+	SagaId      *uint64
 	Title       string
 	Description string
 	Author      string
@@ -10,21 +10,25 @@ type CreateBookCommand struct {
 }
 
 type DeleteBookCommand struct {
-	Id uint64
+	SagaId *uint64
+	Id     uint64
 }
 
 type UpdatePagePositionCommand struct {
-	Id       int64
+	SagaId   *uint64
+	Id       uint64
 	Position float32
 }
 
 type UpdateBookCompletedCommand struct {
-	Id        int64
+	SagaId    *uint64
+	Id        uint64
 	Completed bool
 }
 
 type ToggleCompletionCommand struct {
-	Id int64
+	Id     uint64
+	SagaId *uint64
 }
 
 // - Queries

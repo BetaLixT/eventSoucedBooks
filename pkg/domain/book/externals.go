@@ -6,24 +6,27 @@ import (
 
 type IRepository interface {
 	// - Commands
-	CreateBook(
+	Create(
 		ctx context.Context,
+		sagaId *uint64,
 		data BookData,
 	) error
-	UpdateBook(
+	Update(
 		ctx context.Context,
+		sagaId *uint64,
 		id uint64,
 		ver uint64,
 		data BookData,
-	)
-	DeleteBook(
+	) error
+	Delete(
 		ctx context.Context,
+		sagaId *uint64,
 		id uint64,
 		ver uint64,
 	) error
 	ListEvents(
 		ctx context.Context,
-		id string,
+		id uint64,
 	) ([]BookEvent, error)
 	LastEvent(
 		ctx context.Context,
