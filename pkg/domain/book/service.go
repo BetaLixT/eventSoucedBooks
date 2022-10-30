@@ -3,8 +3,6 @@ package book
 import (
 	"context"
 	"eventSourcedBooks/pkg/domain/base"
-
-	"go.uber.org/zap"
 )
 
 type BookService struct {
@@ -78,6 +76,13 @@ func (s *BookService) DeleteBook(
 	ctx context.Context,
 	cmd DeleteBookCommand,
 ) error {
+	tx, err := s.txfc.Create(ctx)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to create transaction")
+		return err
+	}
+
 	last, err := s.repo.LastEvent(ctx, cmd.Id)
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
@@ -92,6 +97,7 @@ func (s *BookService) DeleteBook(
 
 	err = s.repo.Delete(
 		ctx,
+		tx,
 		cmd.SagaId,
 		cmd.Id,
 		last.Event.Version+1,
@@ -99,6 +105,14 @@ func (s *BookService) DeleteBook(
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("failed to delete book")
+		tx.Rollback(ctx)
+	} else {
+		err = tx.Commit(ctx)
+		if err != nil {
+			lgr := s.lgrf.NewLogger(ctx)
+			lgr.Error("failed to commit transaction")
+			tx.Rollback(ctx)	
+		}
 	}
 	return err
 }
@@ -107,6 +121,13 @@ func (s *BookService) UpdateBookPosition(
 	ctx context.Context,
 	cmd UpdatePagePositionCommand,
 ) error {
+	tx, err := s.txfc.Create(ctx)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to create transaction")
+		return err
+	}
+
 	last, err := s.repo.LastEvent(ctx, cmd.Id)
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
@@ -119,7 +140,9 @@ func (s *BookService) UpdateBookPosition(
 		return base.NewBookMissingError()
 	}
 
-	err = s.repo.Update(ctx,
+	err = s.repo.Update(
+		ctx,
+		tx,
 		cmd.SagaId,
 		cmd.Id,
 		last.Event.Version+1,
@@ -130,6 +153,14 @@ func (s *BookService) UpdateBookPosition(
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("failed to update book")
+		tx.Rollback(ctx)
+	} else {
+		err = tx.Commit(ctx)
+		if err != nil {
+			lgr := s.lgrf.NewLogger(ctx)
+			lgr.Error("failed to commit transaction")
+			tx.Rollback(ctx)	
+		}
 	}
 	return err
 }
@@ -138,6 +169,13 @@ func (s *BookService) UpdateBookCompletion(
 	ctx context.Context,
 	cmd UpdateBookCompletedCommand,
 ) error {
+	tx, err := s.txfc.Create(ctx)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to create transaction")
+		return err
+	}
+
 	last, err := s.repo.LastEvent(ctx, cmd.Id)
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
@@ -150,7 +188,9 @@ func (s *BookService) UpdateBookCompletion(
 		return base.NewBookMissingError()
 	}
 
-	err = s.repo.Update(ctx,
+	err = s.repo.Update(
+		ctx,
+		tx,
 		cmd.SagaId,
 		cmd.Id,
 		last.Event.Version+1,
@@ -161,6 +201,14 @@ func (s *BookService) UpdateBookCompletion(
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("failed to update book")
+		tx.Rollback(ctx)
+	} else {
+		err = tx.Commit(ctx)
+		if err != nil {
+			lgr := s.lgrf.NewLogger(ctx)
+			lgr.Error("failed to commit transaction")
+			tx.Rollback(ctx)	
+		}
 	}
 	return err
 }
@@ -169,6 +217,13 @@ func (s *BookService) ToggleBookCompletion(
 	ctx context.Context,
 	cmd ToggleCompletionCommand,
 ) error {
+	tx, err := s.txfc.Create(ctx)
+	if err != nil {
+		lgr := s.lgrf.NewLogger(ctx)
+		lgr.Error("failed to create transaction")
+		return err
+	}
+
 	evnts, err := s.repo.ListEvents(ctx, cmd.Id)
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
@@ -188,7 +243,9 @@ func (s *BookService) ToggleBookCompletion(
 	state := BuildState(evnts)
 
 	cmp := !state.Completed
-	err = s.repo.Update(ctx,
+	err = s.repo.Update(
+		ctx,
+		tx,
 		cmd.SagaId,
 		cmd.Id,
 		state.Version+1,
@@ -199,6 +256,14 @@ func (s *BookService) ToggleBookCompletion(
 	if err != nil {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("failed to update book")
+		tx.Rollback(ctx)
+	} else {
+		err = tx.Commit(ctx)
+		if err != nil {
+			lgr := s.lgrf.NewLogger(ctx)
+			lgr.Error("failed to commit transaction")
+			tx.Rollback(ctx)	
+		}
 	}
 	return err
 }
