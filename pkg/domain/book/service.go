@@ -3,6 +3,7 @@ package book
 import (
 	"context"
 	"eventSourcedBooks/pkg/domain/base"
+	"eventSourcedBooks/pkg/domain/common"
 )
 
 type BookService struct {
@@ -66,7 +67,7 @@ func (s *BookService) CreateBook(
 		if err != nil {
 			lgr := s.lgrf.NewLogger(ctx)
 			lgr.Error("failed to commit transaction")
-			tx.Rollback(ctx)	
+			tx.Rollback(ctx)
 		}
 	}
 	return err
@@ -89,10 +90,10 @@ func (s *BookService) DeleteBook(
 		lgr.Error("failed to fetch last event")
 		return err
 	}
-	if last.Event.Event == base.DOMAIN_DELETE_EVENT {
+	if last.Event.Event == common.DOMAIN_DELETE_EVENT {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("book was deleted")
-		return base.NewBookMissingError()
+		return common.NewBookMissingError()
 	}
 
 	err = s.repo.Delete(
@@ -111,7 +112,7 @@ func (s *BookService) DeleteBook(
 		if err != nil {
 			lgr := s.lgrf.NewLogger(ctx)
 			lgr.Error("failed to commit transaction")
-			tx.Rollback(ctx)	
+			tx.Rollback(ctx)
 		}
 	}
 	return err
@@ -134,10 +135,10 @@ func (s *BookService) UpdateBookPosition(
 		lgr.Error("failed to fetch last event")
 		return err
 	}
-	if last.Event.Event == base.DOMAIN_DELETE_EVENT {
+	if last.Event.Event == common.DOMAIN_DELETE_EVENT {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("book was deleted")
-		return base.NewBookMissingError()
+		return common.NewBookMissingError()
 	}
 
 	err = s.repo.Update(
@@ -159,7 +160,7 @@ func (s *BookService) UpdateBookPosition(
 		if err != nil {
 			lgr := s.lgrf.NewLogger(ctx)
 			lgr.Error("failed to commit transaction")
-			tx.Rollback(ctx)	
+			tx.Rollback(ctx)
 		}
 	}
 	return err
@@ -182,10 +183,10 @@ func (s *BookService) UpdateBookCompletion(
 		lgr.Error("failed to fetch last event")
 		return err
 	}
-	if last.Event.Event == base.DOMAIN_DELETE_EVENT {
+	if last.Event.Event == common.DOMAIN_DELETE_EVENT {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("book was deleted")
-		return base.NewBookMissingError()
+		return common.NewBookMissingError()
 	}
 
 	err = s.repo.Update(
@@ -207,7 +208,7 @@ func (s *BookService) UpdateBookCompletion(
 		if err != nil {
 			lgr := s.lgrf.NewLogger(ctx)
 			lgr.Error("failed to commit transaction")
-			tx.Rollback(ctx)	
+			tx.Rollback(ctx)
 		}
 	}
 	return err
@@ -233,12 +234,12 @@ func (s *BookService) ToggleBookCompletion(
 	if len(evnts) == 0 {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("no events found")
-		return base.NewBookMissingError()
+		return common.NewBookMissingError()
 	}
-	if evnts[len(evnts)-1].Event.Event == base.DOMAIN_DELETE_EVENT {
+	if evnts[len(evnts)-1].Event.Event == common.DOMAIN_DELETE_EVENT {
 		lgr := s.lgrf.NewLogger(ctx)
 		lgr.Error("book was deleted")
-		return base.NewBookMissingError()
+		return common.NewBookMissingError()
 	}
 	state := BuildState(evnts)
 
@@ -262,7 +263,7 @@ func (s *BookService) ToggleBookCompletion(
 		if err != nil {
 			lgr := s.lgrf.NewLogger(ctx)
 			lgr.Error("failed to commit transaction")
-			tx.Rollback(ctx)	
+			tx.Rollback(ctx)
 		}
 	}
 	return err
