@@ -95,18 +95,10 @@ type migrationEntity struct {
 
 var timestampProcedures = MigrationScript{
 	up: `
-		CREATE OR REPLACE FUNCTION trigger_set_datetimecreated()
+		CREATE OR REPLACE FUNCTION trigger_set_event_time()
 		RETURNS TRIGGER AS $$
 		BEGIN
-			NEW.dateTimeCreated = NOW();
-			RETURN NEW;
-		END;
-		$$ LANGUAGE plpgsql;
-		
-		CREATE OR REPLACE FUNCTION trigger_set_datetimeupdated()
-		RETURNS TRIGGER AS $$
-		BEGIN
-			NEW.dateTimeUpdated = NOW();
+			NEW.event_time = NOW();
 			RETURN NEW;
 		END;
 		$$ LANGUAGE plpgsql;
@@ -121,8 +113,7 @@ var timestampProcedures = MigrationScript{
 		`,
 	down: `
 	  DROP FUNCTION version_update();
-		DROP FUNCTION trigger_set_datetimeupdated();
-		DROP FUNCTION trigger_set_datetimecreated();`,
+		DROP FUNCTION trigger_set_event_time();`,
 }
 
 var migrationTable = MigrationScript{

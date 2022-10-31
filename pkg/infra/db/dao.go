@@ -6,29 +6,8 @@ import (
 	"errors"
 	"time"
 
-	"eventSourcedBooks/pkg/domain/base"
-	"eventSourcedBooks/pkg/domain/courtroom"
-
 	"github.com/lib/pq"
 )
-
-// Models as stored in the database with required tags
-type Courtroom struct {
-	Id              string
-	Title           string
-	Description     string
-	DateTimeStart   time.Time
-	Location        string
-	DateTimeEnd     time.Time
-	Categories      pq.StringArray
-	JoinInfo        JoinInfo
-	ExternalCmsId   *string
-	Metadata        JsonObj
-	Version         int
-	Deleted         bool
-	DateTimeCreated time.Time
-	DateTimeUpdated time.Time
-}
 
 type JsonObj map[string]interface{}
 
@@ -104,49 +83,27 @@ type ExistsEntity struct {
 func GetMigrationScripts() []MigrationScript {
 	migrationScripts := []MigrationScript{
 		{
-			key: "initial",
+			key: "initial books",
 			up: `
-				CREATE TABLE courtrooms (
-					id uuid PRIMARY KEY,
-					title text,
-					description text,
-					datetimestart timestamp with time zone,
-					datetimeend timestamp with time zone,
-					location text,
-					categories text[],
-					joininfo jsonb,
-					metadata jsonb,
-					version integer DEFAULT 0,
-					deleted boolean DEFAULT false,
-					datetimecreated timestamp with time zone,
-					datetimeupdated timestamp with time zone
+				CREATE TABLE events (
+					id bigserial PRIMARY KEY,
+					saga_id text,
+					stream text,
+					stream_id text,
+					event text,
+					version bigint,
+					event_time timestamp with time zone,
+					data bytea,
+					CONSTRAINT source_unique UNIQUE (id, version)
 				);
 
-				CREATE TRIGGER set_courtrooms_datetimecreated
-				BEFORE INSERT ON courtrooms
+				CREATE TRIGGER set_events_event_time
+				BEFORE INSERT ON events
 				FOR EACH ROW
-				EXECUTE PROCEDURE trigger_set_datetimecreated();
-				
-				CREATE TRIGGER set_courtrooms_datetimeupdated_in
-				BEFORE INSERT ON courtrooms
-				FOR EACH ROW
-				EXECUTE PROCEDURE trigger_set_datetimeupdated();
-
-				CREATE TRIGGER set_courtrooms_datetimeupdated_up
-				BEFORE UPDATE ON courtrooms
-				FOR EACH ROW
-				EXECUTE PROCEDURE trigger_set_datetimeupdated();
-
-				CREATE TRIGGER courtrooms_version_update
-				BEFORE UPDATE ON courtrooms
-				FOR EACH ROW
-				EXECUTE PROCEDURE version_update();`,
+				EXECUTE PROCEDURE trigger_set_event_time();`,
 			down: `
-				DROP TRIGGER courtrooms_version_update on courtrooms;
-				DROP TRIGGER set_courtrooms_datetimeupdated_up on courtrooms;
-				DROP TRIGGER set_courtrooms_datetimeupdated_in on courtrooms;
-				DROP TRIGGER set_courtrooms_datetimecreated on courtrooms;
-				DROP TABLE courtrooms;`,
+				DROP TRIGGER set_events_event_time on events;
+				DROP TABLE events;`,
 		},
 		{
 			key: "externalCmsId",
