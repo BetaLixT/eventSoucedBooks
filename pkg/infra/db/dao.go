@@ -83,36 +83,45 @@ type ExistsEntity struct {
 func GetMigrationScripts() []MigrationScript {
 	migrationScripts := []MigrationScript{
 		{
-			key: "initial books",
+			key: "initial-books",
 			up: `
 				CREATE TABLE events (
 					id bigserial PRIMARY KEY,
 					saga_id text,
 					stream text,
 					stream_id text,
-					event text,
 					version bigint,
+					event text,
 					event_time timestamp with time zone,
 					data bytea,
-					CONSTRAINT source_unique UNIQUE (id, version)
+					CONSTRAINT source_unique UNIQUE (stream, stream_id, version)
 				);
+
+				CREATE INDEX idx_events_stream_events ON events(stream, stream_id);
 
 				CREATE TRIGGER set_events_event_time
 				BEFORE INSERT ON events
 				FOR EACH ROW
-				EXECUTE PROCEDURE trigger_set_event_time();`,
+				EXECUTE PROCEDURE trigger_set_event_time();
+
+				CREATE TABLE uniques (
+					stream text,
+					stream_id text,
+					property text,
+					value text,
+					CONSTRAINT source_unique UNIQUE (stream, property, value),
+				)
+
+				CREATE INDEX idx_uniques_stream_constraints
+				ON uniques(stream, stream_id);
+				`,
 			down: `
+			  DROP INDEX idx_uniques_stream_constraints;
+			  DROP TABLE uniques;
 				DROP TRIGGER set_events_event_time on events;
-				DROP TABLE events;`,
-		},
-		{
-			key: "externalCmsId",
-			up: `
-				ALTER TABLE courtrooms
-				ADD COLUMN externalCmsId TEXT UNIQUE`,
-			down: `
-				ALTER TABLE courtrooms
-				DROP COLUMN externalCmsId`,
+				DROP INDEX idx_events_stream_events;
+				DROP TABLE events;
+				`,
 		},
 	}
 	return migrationScripts
